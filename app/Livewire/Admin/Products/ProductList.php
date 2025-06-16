@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Products;
 use App\Models\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Storage; // Correct placement
 
 class ProductList extends Component
 {
@@ -14,7 +15,12 @@ class ProductList extends Component
     {
         $product = Product::findOrFail($productId);
         // TODO: Add authorization check
-        // TODO: Delete product image if it exists
+
+        // Delete product image if it exists
+        if ($product->image_path) {
+            Storage::disk('public')->delete($product->image_path);
+        }
+
         $product->delete();
 
         session()->flash('message', 'Product deleted successfully.');

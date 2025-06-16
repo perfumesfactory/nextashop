@@ -33,15 +33,17 @@ class CartService
         }
 
         if ($this->cart->has($product->id)) {
-            $this->cart[$product->id]['quantity'] += $quantity;
+            $item = $this->cart[$product->id];
+            $item['quantity'] += $quantity;
+            $this->cart->put($product->id, $item);
         } else {
-            $this->cart[$product->id] = [
+            $this->cart->put($product->id, [
                 'product_id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
                 'quantity' => $quantity,
                 'image_path' => $product->image_path, // Store image path
-            ];
+            ]); // Added closing parenthesis here
         }
         $this->saveCart();
     }
@@ -55,7 +57,9 @@ class CartService
         if ($quantity <= 0) {
             $this->removeItem($productId);
         } else {
-            $this->cart[$productId]['quantity'] = $quantity;
+            $item = $this->cart[$productId];
+            $item['quantity'] = $quantity;
+            $this->cart->put($productId, $item);
             $this->saveCart();
         }
     }
