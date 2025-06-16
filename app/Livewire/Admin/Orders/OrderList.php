@@ -12,8 +12,8 @@ class OrderList extends Component
 
     public function render()
     {
-        // Eager load user relationship for efficiency if you display user details like name/email
-        $orders = Order::with('user')->latest()->paginate(10);
+        // Eager load user relationship for efficiency, and add secondary sort for deterministic pagination
+        $orders = Order::with('user')->latest()->orderBy('id', 'desc')->paginate(10);
 
         return view('livewire.admin.orders.order-list', [
             'orders' => $orders,
